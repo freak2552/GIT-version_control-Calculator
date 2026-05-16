@@ -3,201 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator & Math Survival Game</title>
+    <title>Garden Calculator & Math Survival</title>
     <style>
-        /* --- GENERAL --- */
+        /* --- GENERAL & GARDEN THEME --- */
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #1a1a24;
+            /* Soft garden gradient background */
+            background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
-            color: #fff;
+            color: #333;
         }
 
         /* --- CALCULATOR STYLES --- */
         .calculator {
-            background-color: #2b2b36;
+            /* Wood-like texture/color */
+            background-color: #8b5a2b; 
             padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4), inset 0 0 10px rgba(0,0,0,0.2);
             width: 300px;
             transition: opacity 0.3s ease;
+            position: relative;
+        }
+
+        /* Decorative leaf */
+        .calculator::after {
+            content: "🌿";
+            position: absolute;
+            top: -20px;
+            right: -15px;
+            font-size: 40px;
+            filter: drop-shadow(2px 4px 2px rgba(0,0,0,0.3));
         }
 
         #display {
             width: 100%;
-            height: 60px;
+            height: 65px;
             font-size: 32px;
             text-align: right;
             margin-bottom: 20px;
-            padding: 10px;
+            padding: 10px 15px;
             box-sizing: border-box;
-            border: none;
-            background-color: #1e1e26;
+            border: 2px solid #5c3a21;
+            /* Soft paper/stone look for display */
+            background-color: #f4f1ea;
             border-radius: 8px;
-            color: #00ffcc;
-            font-family: monospace;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+            color: #2c3e50;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            box-shadow: inset 0 3px 6px rgba(0,0,0,0.1);
         }
 
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
 
         .calc-btn {
             padding: 20px 0;
-            font-size: 20px;
+            font-size: 22px;
             font-weight: bold;
             cursor: pointer;
-            border: none;
-            border-radius: 8px;
-            background-color: #3e3e4a;
-            color: #fff;
-            transition: background-color 0.2s, transform 0.1s;
+            border: 2px solid #6b4423;
+            border-radius: 10px;
+            /* Stone/pebble buttons */
+            background-color: #e3dac9; 
+            color: #4a4a4a;
+            transition: background-color 0.2s, transform 0.1s, box-shadow 0.1s;
+            box-shadow: 0 4px 0 #6b4423;
         }
 
-        .calc-btn:hover { background-color: #4e4e5a; }
-        .calc-btn:active { transform: scale(0.95); }
+        .calc-btn:hover { background-color: #f0e9dc; transform: translateY(2px); box-shadow: 0 2px 0 #6b4423;}
+        .calc-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #6b4423; }
 
-        .operator { background-color: #ff3366; color: white; }
-        .operator:hover { background-color: #ff1a53; }
+        .operator { background-color: #d4e157; color: #33691e; border-color: #9e9d24; box-shadow: 0 4px 0 #9e9d24;}
+        .operator:hover { background-color: #e6ee9c; }
 
-        .clear { background-color: #555; grid-column: span 2; }
-        .clear:hover { background-color: #666; }
+        .clear { background-color: #ef9a9a; color: #b71c1c; grid-column: span 2; border-color: #c62828; box-shadow: 0 4px 0 #c62828;}
+        .clear:hover { background-color: #ffcdd2; }
 
-        .equal { background-color: #00ffcc; color: #000; grid-column: span 2; }
-        .equal:hover { background-color: #00e6b8; }
+        .equal { background-color: #81c784; color: #1b5e20; grid-column: span 2; border-color: #2e7d32; box-shadow: 0 4px 0 #2e7d32;}
+        .equal:hover { background-color: #a5d6a7; }
         
         .zero-btn { grid-column: span 2; }
 
         /* --- COMPETITIVE GAME STYLES --- */
         .game-container {
             display: none;
-            background-color: #121218;
+            /* Darker, tense "night garden" arena */
+            background-color: #1a2517;
             padding: 25px;
             border-radius: 16px;
-            box-shadow: 0 0 40px rgba(0, 255, 204, 0.2);
+            box-shadow: 0 0 40px rgba(129, 199, 132, 0.4);
             width: 340px;
             text-align: center;
-            border: 2px solid #00ffcc;
+            border: 4px solid #81c784;
             position: relative;
+            color: #fff;
         }
 
         .header-stats {
             display: flex;
             justify-content: space-between;
             margin-bottom: 15px;
-            font-size: 14px;
-            color: #aaa;
+            font-size: 16px;
+            color: #a5d6a7;
             font-family: monospace;
+            font-weight: bold;
         }
 
-        .score-display { color: #00ffcc; font-weight: bold; font-size: 18px; }
-        .high-score { color: #ff3366; }
+        .score-display { color: #fff; font-size: 20px; }
+        .high-score { color: #ffeb3b; }
 
         /* Timer Bar */
         .timer-container {
             width: 100%;
-            height: 10px;
+            height: 12px;
             background-color: #333;
-            border-radius: 5px;
+            border-radius: 6px;
             margin-bottom: 20px;
             overflow: hidden;
+            border: 1px solid #555;
         }
 
         #timerBar {
             height: 100%;
             width: 100%;
-            background-color: #00ffcc;
+            background-color: #81c784;
             transition: width 0.1s linear, background-color 0.3s;
         }
 
         .question {
-            font-size: 42px;
+            font-size: 48px;
             font-weight: bold;
             color: #fff;
             margin: 20px 0;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
             font-family: monospace;
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
+            gap: 15px;
             margin-bottom: 20px;
         }
 
         .option-btn {
-            background-color: #2b2b36;
+            background-color: #2c3e2d;
             color: #fff;
-            border: 2px solid #3e3e4a;
+            border: 2px solid #4a6b4a;
             padding: 15px;
-            font-size: 22px;
+            font-size: 26px;
             font-weight: bold;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.1s ease;
             font-family: monospace;
+            box-shadow: 0 5px 0 #1e2b1f;
         }
 
-        .option-btn:hover { background-color: #3e3e4a; border-color: #00ffcc; }
-        .option-btn:active { transform: scale(0.95); }
+        .option-btn:hover { background-color: #3a523b; border-color: #81c784; transform: translateY(2px); box-shadow: 0 3px 0 #1e2b1f;}
+        .option-btn:active { transform: translateY(5px); box-shadow: 0 0 0 #1e2b1f; }
 
-        .correct-anim { background-color: #00ffcc !important; color: #000 !important; }
-        .wrong-anim { background-color: #ff3366 !important; color: #fff !important; }
+        .correct-anim { background-color: #81c784 !important; color: #000 !important; border-color: #fff !important;}
+        .wrong-anim { background-color: #e53935 !important; color: #fff !important; border-color: #fff !important;}
 
         .game-over-screen {
             display: none;
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(18, 18, 24, 0.95);
-            border-radius: 16px;
+            background-color: rgba(26, 37, 23, 0.95);
+            border-radius: 12px;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 10;
         }
 
-        .game-over-title { color: #ff3366; font-size: 32px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;}
-        .final-score { font-size: 48px; color: #00ffcc; margin-bottom: 20px; font-family: monospace;}
+        .game-over-title { color: #ffeb3b; font-size: 36px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;}
+        .final-score { font-size: 56px; color: #fff; margin-bottom: 25px; font-family: monospace; text-shadow: 0 0 10px #81c784;}
 
         .action-btn {
-            background-color: transparent;
+            background-color: #2e7d32;
             color: #fff;
-            border: 2px solid #fff;
-            padding: 10px 20px;
-            margin: 5px;
-            font-size: 16px;
-            border-radius: 6px;
+            border: none;
+            padding: 12px 24px;
+            margin: 8px;
+            font-size: 18px;
+            border-radius: 8px;
             cursor: pointer;
             text-transform: uppercase;
             font-weight: bold;
             transition: all 0.2s;
+            box-shadow: 0 4px 0 #1b5e20;
         }
 
-        .play-again-btn { border-color: #00ffcc; color: #00ffcc; }
-        .play-again-btn:hover { background-color: #00ffcc; color: #000; }
+        .play-again-btn { background-color: #81c784; color: #000; box-shadow: 0 4px 0 #388e3c;}
+        .play-again-btn:hover { background-color: #a5d6a7; transform: translateY(2px); box-shadow: 0 2px 0 #388e3c;}
+        .play-again-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #388e3c;}
         
-        .exit-btn { border-color: #555; color: #aaa; }
-        .exit-btn:hover { background-color: #555; color: #fff; }
+        .exit-btn { background-color: #8d6e63; box-shadow: 0 4px 0 #5d4037;}
+        .exit-btn:hover { background-color: #a1887f; transform: translateY(2px); box-shadow: 0 2px 0 #5d4037;}
+        .exit-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #5d4037;}
 
-        /* Screen Flash for damage */
         @keyframes flashRed {
-            0% { box-shadow: inset 0 0 50px rgba(255, 51, 102, 0.8); }
-            100% { box-shadow: inset 0 0 0 rgba(255, 51, 102, 0); }
+            0% { box-shadow: inset 0 0 50px rgba(229, 57, 53, 0.8); }
+            100% { box-shadow: inset 0 0 0 rgba(229, 57, 53, 0); }
         }
         .damage { animation: flashRed 0.3s ease-out; }
 
     </style>
 </head>
 <body>
+
+<!-- Audio Elements -->
+<!-- Note: We use placeholder URLs. You can replace these with actual audio files if desired, but these represent the structure for the audio. -->
+<audio id="gardenAudio" loop>
+    <source src="https://actions.google.com/sounds/v1/water/small_stream_with_birds.ogg" type="audio/ogg">
+</audio>
+<audio id="gameAudio" loop>
+    <source src="https://actions.google.com/sounds/v1/science_fiction/scifi_hum_loop.ogg" type="audio/ogg">
+</audio>
 
 <!-- Standard Calculator -->
 <div class="calculator" id="calculator">
@@ -257,6 +290,37 @@
 </div>
 
 <script>
+    // --- AUDIO LOGIC ---
+    let audioStarted = false;
+    const gardenAudio = document.getElementById('gardenAudio');
+    const gameAudio = document.getElementById('gameAudio');
+    gardenAudio.volume = 0.4;
+    gameAudio.volume = 0.6;
+
+    // Start background audio on first interaction (required by modern browsers)
+    document.body.addEventListener('click', () => {
+        if (!audioStarted && !isGameActive) {
+            gardenAudio.play().catch(e => console.log("Audio play prevented by browser"));
+            audioStarted = true;
+        }
+    }, { once: true });
+
+    function playGardenAudio() {
+        if(audioStarted) {
+            gameAudio.pause();
+            gameAudio.currentTime = 0;
+            gardenAudio.play();
+        }
+    }
+
+    function playGameAudio() {
+        if(audioStarted) {
+            gardenAudio.pause();
+            gameAudio.play();
+        }
+    }
+
+
     // --- CALCULATOR LOGIC ---
     let display = document.getElementById('display');
     let currentInput = '';
@@ -316,7 +380,7 @@
 
 
     // --- COMPETITIVE MATH GAME LOGIC ---
-    const MAX_TIME = 30; // Seconds to start
+    const MAX_TIME = 30;
     let currentCorrectAnswer = 0;
     let score = 0;
     let highScore = 0;
@@ -327,6 +391,7 @@
         isGameActive = true;
         document.getElementById('calculator').style.display = 'none';
         document.getElementById('mathGame').style.display = 'block';
+        playGameAudio();
     }
 
     function startMathGame() {
@@ -337,21 +402,19 @@
         generateQuestion();
         
         clearInterval(timerInterval);
-        timerInterval = setInterval(gameTick, 100); // run 10 times a second for smooth bar
+        timerInterval = setInterval(gameTick, 100);
     }
 
     function gameTick() {
         timeLeft -= 0.1;
         
-        // Update timer bar visuals
         let percentage = (timeLeft / MAX_TIME) * 100;
         let timerBar = document.getElementById('timerBar');
         timerBar.style.width = Math.max(percentage, 0) + '%';
         
-        // Color changes based on time left
-        if (percentage > 50) timerBar.style.backgroundColor = '#00ffcc';
-        else if (percentage > 20) timerBar.style.backgroundColor = '#ffcc00';
-        else timerBar.style.backgroundColor = '#ff3366';
+        if (percentage > 50) timerBar.style.backgroundColor = '#81c784';
+        else if (percentage > 20) timerBar.style.backgroundColor = '#ffeb3b';
+        else timerBar.style.backgroundColor = '#e53935';
 
         if (timeLeft <= 0) {
             endGame();
@@ -359,24 +422,20 @@
     }
 
     function generateQuestion() {
-        // Difficulty scaling based on current score
-        let level = Math.floor(score / 5); // Level up every 5 correct answers
+        let level = Math.floor(score / 5);
         
         let num1, num2, operatorSymbol;
         
         if (level === 0) {
-            // Level 0: Basic addition/subtraction
             num1 = Math.floor(Math.random() * 20) + 5;
             num2 = Math.floor(Math.random() * 20) + 1;
             operatorSymbol = Math.random() > 0.5 ? '+' : '-';
         } else if (level === 1) {
-            // Level 1: Medium addition/subtraction + simple multiplication
             let ops = ['+', '-', '*'];
             operatorSymbol = ops[Math.floor(Math.random() * 3)];
             num1 = Math.floor(Math.random() * 50) + 10;
             num2 = operatorSymbol === '*' ? Math.floor(Math.random() * 10) + 2 : Math.floor(Math.random() * 50) + 10;
         } else if (level === 2) {
-            // Level 2: Harder multiplication and division
             let ops = ['*', '/'];
             operatorSymbol = ops[Math.floor(Math.random() * 2)];
             if (operatorSymbol === '*') {
@@ -384,10 +443,9 @@
                 num2 = Math.floor(Math.random() * 15) + 5;
             } else {
                 num2 = Math.floor(Math.random() * 12) + 2;
-                num1 = num2 * (Math.floor(Math.random() * 12) + 2); // Ensure clean division
+                num1 = num2 * (Math.floor(Math.random() * 12) + 2);
             }
         } else {
-            // Level 3+: Intense mode (Triple digits, big multiplication)
             let ops = ['+', '-', '*', '/'];
             operatorSymbol = ops[Math.floor(Math.random() * 4)];
             num1 = Math.floor(Math.random() * 100) + 20;
@@ -397,7 +455,6 @@
             if (operatorSymbol === '/') num1 = num2 * (Math.floor(Math.random() * 15) + 2);
         }
 
-        // Calculate correct answer
         if (operatorSymbol === '+') currentCorrectAnswer = num1 + num2;
         if (operatorSymbol === '-') currentCorrectAnswer = num1 - num2;
         if (operatorSymbol === '*') currentCorrectAnswer = num1 * num2;
@@ -405,10 +462,8 @@
 
         document.getElementById('questionDisplay').innerText = `${num1} ${operatorSymbol} ${num2}`;
 
-        // Generate tricky wrong answers
         let options = [currentCorrectAnswer];
         while (options.length < 4) {
-            // Create variations: off by 1, off by 10, or random nearby
             let variance = Math.floor(Math.random() * 3);
             let wrongAnswer;
             
@@ -421,10 +476,8 @@
             }
         }
 
-        // Shuffle
         options.sort(() => Math.random() - 0.5);
 
-        // Map to UI
         for (let i = 0; i < 4; i++) {
             let btn = document.getElementById(`opt${i}`);
             btn.innerText = options[i];
@@ -438,12 +491,10 @@
         let selectedValue = parseInt(btn.dataset.value);
 
         if (selectedValue === currentCorrectAnswer) {
-            // Correct: +1 Score, +1.5 Seconds
             score += 1;
-            timeLeft = Math.min(timeLeft + 1.5, MAX_TIME); // Cap at max time
+            timeLeft = Math.min(timeLeft + 1.5, MAX_TIME);
             updateScoreDisplay();
             
-            // Visual feedback
             btn.classList.add('correct-anim');
             setTimeout(() => {
                 btn.classList.remove('correct-anim');
@@ -451,7 +502,6 @@
             }, 150);
             
         } else {
-            // Wrong: -3 Seconds, Flash Screen
             timeLeft -= 3;
             document.getElementById('mathGame').classList.add('damage');
             btn.classList.add('wrong-anim');
@@ -484,6 +534,7 @@
         document.getElementById('gameOverScreen').style.display = 'none';
         document.getElementById('calculator').style.display = 'block';
         clearDisplay();
+        playGardenAudio();
     }
 </script>
 
