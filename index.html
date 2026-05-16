@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Calculator</title>
+    <title>Calculator & Math Game</title>
     <style>
-        /* General body styling to center the calculator */
+        /* General body styling */
         body {
             display: flex;
             justify-content: center;
@@ -14,18 +14,19 @@
             margin: 0;
             background-color: #282c34;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
         }
 
-        /* Calculator container styling */
+        /* --- CALCULATOR STYLES --- */
         .calculator {
             background-color: #ffffff;
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             width: 300px;
+            transition: opacity 0.3s ease;
         }
 
-        /* The display screen styling */
         #display {
             width: 100%;
             height: 60px;
@@ -40,15 +41,13 @@
             color: #333;
         }
 
-        /* Grid layout for buttons */
         .buttons {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             gap: 10px;
         }
 
-        /* Default button styling */
-        button {
+        .calc-btn {
             padding: 20px 0;
             font-size: 20px;
             font-weight: bold;
@@ -60,136 +59,300 @@
             transition: background-color 0.2s;
         }
 
-        button:hover {
-            background-color: #d0d0d0;
-        }
+        .calc-btn:hover { background-color: #d0d0d0; }
+        .calc-btn:active { background-color: #c0c0c0; }
 
-        button:active {
-            background-color: #c0c0c0;
-        }
+        .operator { background-color: #ff9800; color: white; }
+        .operator:hover { background-color: #f57c00; }
 
-        /* Specific colors for operators and special buttons */
-        .operator {
-            background-color: #ff9800;
-            color: white;
-        }
+        .clear { background-color: #f44336; color: white; grid-column: span 2; }
+        .clear:hover { background-color: #d32f2f; }
 
-        .operator:hover {
-            background-color: #e20c0c;
-        }
-
-        .clear {
-            background-color: #f44336;
-            color: white;
-            grid-column: span 2;
-        }
+        .equal { background-color: #4caf50; color: white; grid-column: span 2; }
+        .equal:hover { background-color: #388e3c; }
         
-        .clear:hover {
-            background-color: #d32f2f;
+        .zero-btn { grid-column: span 2; }
+
+        /* --- MATH GAME STYLES --- */
+        .game-container {
+            display: none; /* Hidden by default */
+            background-color: #fff9c4; /* Cheerful yellow */
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            width: 320px;
+            text-align: center;
+            border: 5px dashed #ffb300;
         }
 
-        .equal {
-            background-color: #00f008;
+        .game-title {
+            color: #ff6f00;
+            margin-top: 0;
+            font-size: 28px;
+        }
+
+        .question {
+            font-size: 40px;
+            font-weight: bold;
+            color: #1565c0;
+            margin: 20px 0;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background-color: #29b6f6;
             color: white;
-            grid-column: span 2;
+            border: none;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: transform 0.1s, background-color 0.2s;
+            box-shadow: 0 4px 0 #0288d1;
         }
 
-        .equal:hover {
-            background-color: #388e3c;
+        .option-btn:hover { background-color: #03a9f4; transform: translateY(2px); box-shadow: 0 2px 0 #0288d1;}
+        .option-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #0288d1;}
+
+        .feedback {
+            font-size: 24px;
+            height: 30px;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
-        
-        .zero-btn {
-            grid-column: span 2;
+
+        .score {
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+            margin-bottom: 15px;
         }
+
+        .exit-btn {
+            background-color: #ef5350;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .exit-btn:hover { background-color: #e53935; }
+
     </style>
 </head>
 <body>
 
-<div class="calculator">
+<!-- Standard Calculator -->
+<div class="calculator" id="calculator">
     <input type="text" id="display" disabled>
     <div class="buttons">
-        <button class="clear" onclick="clearDisplay()">C</button>
-        <button class="operator" onclick="appendOperator('/')">&divide;</button>
-        <button class="operator" onclick="appendOperator('*')">&times;</button>
+        <button class="calc-btn clear" onclick="clearDisplay()">C</button>
+        <button class="calc-btn operator" onclick="appendOperator('/')">&divide;</button>
+        <button class="calc-btn operator" onclick="appendOperator('*')">&times;</button>
         
-        <button onclick="appendNumber('7')">7</button>
-        <button onclick="appendNumber('8')">8</button>
-        <button onclick="appendNumber('9')">9</button>
-        <button class="operator" onclick="appendOperator('-')">-</button>
+        <button class="calc-btn" onclick="appendNumber('7')">7</button>
+        <button class="calc-btn" onclick="appendNumber('8')">8</button>
+        <button class="calc-btn" onclick="appendNumber('9')">9</button>
+        <button class="calc-btn operator" onclick="appendOperator('-')">-</button>
         
-        <button onclick="appendNumber('4')">4</button>
-        <button onclick="appendNumber('5')">5</button>
-        <button onclick="appendNumber('6')">6</button>
-        <button class="operator" onclick="appendOperator('+')">+</button>
+        <button class="calc-btn" onclick="appendNumber('4')">4</button>
+        <button class="calc-btn" onclick="appendNumber('5')">5</button>
+        <button class="calc-btn" onclick="appendNumber('6')">6</button>
+        <button class="calc-btn operator" onclick="appendOperator('+')">+</button>
         
-        <button onclick="appendNumber('1')">1</button>
-        <button onclick="appendNumber('2')">2</button>
-        <button onclick="appendNumber('3')">3</button>
-        <button class="equal" onclick="calculate()">=</button>
+        <button class="calc-btn" onclick="appendNumber('1')">1</button>
+        <button class="calc-btn" onclick="appendNumber('2')">2</button>
+        <button class="calc-btn" onclick="appendNumber('3')">3</button>
+        <button class="calc-btn equal" onclick="calculate()">=</button>
         
-        <button class="zero-btn" onclick="appendNumber('0')">0</button>
-        <button onclick="appendNumber('.')">.</button>
+        <button class="calc-btn zero-btn" onclick="appendNumber('0')">0</button>
+        <button class="calc-btn" onclick="appendNumber('.')">.</button>
     </div>
 </div>
 
+<!-- Child-Friendly Math Game -->
+<div class="game-container" id="mathGame">
+    <h2 class="game-title">✨ Math Time! ✨</h2>
+    <div class="score">Score: <span id="scoreDisplay">0</span> 🌟</div>
+    <div class="question" id="questionDisplay">5 + 3 = ?</div>
+    
+    <div class="options-grid">
+        <button class="option-btn" onclick="checkAnswer(0)" id="opt0">1</button>
+        <button class="option-btn" onclick="checkAnswer(1)" id="opt1">2</button>
+        <button class="option-btn" onclick="checkAnswer(2)" id="opt2">3</button>
+        <button class="option-btn" onclick="checkAnswer(3)" id="opt3">4</button>
+    </div>
+
+    <div class="feedback" id="feedbackDisplay"></div>
+    <button class="exit-btn" onclick="exitGame()">Back to Calculator</button>
+</div>
+
 <script>
+    // --- CALCULATOR LOGIC ---
     let display = document.getElementById('display');
     let currentInput = '';
+    let isGameActive = false;
 
-    // Appends a number or decimal to the display string
     function appendNumber(number) {
-        // Prevent multiple decimals in a single number sequence
         if (number === '.' && currentInput.includes('.')) {
             let parts = currentInput.split(/[+\-*/]/);
             if (parts[parts.length - 1].includes('.')) return;
         }
-        
         currentInput += number;
         updateDisplay();
     }
 
-    // Appends an operator to the display string
     function appendOperator(operator) {
         if (currentInput === '') return;
-        
-        // Prevent multiple operators in a row, replace the last one if pressed consecutively
         let lastChar = currentInput.slice(-1);
         if (['+', '-', '*', '/'].includes(lastChar)) {
             currentInput = currentInput.slice(0, -1) + operator;
         } else {
             currentInput += operator;
         }
-        
         updateDisplay();
     }
 
-    // Clears the calculator state
     function clearDisplay() {
         currentInput = '';
         updateDisplay();
     }
 
-    // Evaluates the math expression
     function calculate() {
-        if (currentInput === '') return;
+        if (currentInput === '' || isGameActive) return;
         
         try {
-            // Using new Function instead of eval for a slightly safer evaluation
             let result = new Function('return ' + currentInput)();
-            
-            // Format to prevent extremely long decimals
             currentInput = Math.round(result * 100000000) / 100000000;
             currentInput = currentInput.toString();
             updateDisplay();
+            
+            // LAUNCH THE GAME: Wait 1 second so they see the result, then start
+            setTimeout(() => {
+                if(currentInput !== 'Error' && currentInput !== '') {
+                    startMathGame();
+                }
+            }, 1000);
+
         } catch (error) {
             display.value = 'Error';
             currentInput = '';
         }
     }
 
-    // Updates the DOM display element
     function updateDisplay() {
         display.value = currentInput;
+    }
+
+
+    // --- MATH GAME LOGIC ---
+    let currentCorrectAnswer = 0;
+    let score = 0;
+
+    function startMathGame() {
+        isGameActive = true;
+        document.getElementById('calculator').style.display = 'none';
+        document.getElementById('mathGame').style.display = 'block';
+        score = 0;
+        updateScoreDisplay();
+        generateQuestion();
+    }
+
+    function generateQuestion() {
+        // Clear previous feedback
+        document.getElementById('feedbackDisplay').innerText = '';
+        
+        // Generate simple numbers (1 to 10) for kid-friendly math
+        let num1 = Math.floor(Math.random() * 10) + 1;
+        let num2 = Math.floor(Math.random() * 10) + 1;
+        let isAddition = Math.random() > 0.5; // 50% chance of + or -
+
+        let operatorSymbol = '+';
+        
+        // Ensure no negative results for kids if subtracting
+        if (!isAddition) {
+            operatorSymbol = '-';
+            if (num1 < num2) {
+                let temp = num1;
+                num1 = num2;
+                num2 = temp;
+            }
+            currentCorrectAnswer = num1 - num2;
+        } else {
+            currentCorrectAnswer = num1 + num2;
+        }
+
+        document.getElementById('questionDisplay').innerText = `${num1} ${operatorSymbol} ${num2} = ?`;
+
+        // Generate 3 random wrong answers close to the real answer
+        let options = [currentCorrectAnswer];
+        while (options.length < 4) {
+            let wrongAnswer = currentCorrectAnswer + (Math.floor(Math.random() * 7) - 3); // +/- 3 range
+            if (wrongAnswer >= 0 && !options.includes(wrongAnswer)) {
+                options.push(wrongAnswer);
+            }
+        }
+
+        // Shuffle the options
+        options.sort(() => Math.random() - 0.5);
+
+        // Assign to buttons
+        for (let i = 0; i < 4; i++) {
+            let btn = document.getElementById(`opt${i}`);
+            btn.innerText = options[i];
+            btn.dataset.value = options[i]; // Store value in data attribute
+            btn.disabled = false; // re-enable if disabled
+        }
+    }
+
+    function checkAnswer(buttonIndex) {
+        let selectedValue = parseInt(document.getElementById(`opt${buttonIndex}`).dataset.value);
+        let feedbackEl = document.getElementById('feedbackDisplay');
+
+        // Disable buttons temporarily to prevent spam clicking
+        for(let i=0; i<4; i++) document.getElementById(`opt${i}`).disabled = true;
+
+        if (selectedValue === currentCorrectAnswer) {
+            feedbackEl.innerText = '🎉 Correct! Great job!';
+            feedbackEl.style.color = '#4caf50';
+            score += 1;
+            updateScoreDisplay();
+            
+            // Wait a moment, then load next question
+            setTimeout(generateQuestion, 1500);
+        } else {
+            feedbackEl.innerText = 'Oops! Try again. ❌';
+            feedbackEl.style.color = '#f44336';
+            
+            // Re-enable buttons so they can try again
+            setTimeout(() => {
+                feedbackEl.innerText = '';
+                for(let i=0; i<4; i++) document.getElementById(`opt${i}`).disabled = false;
+            }, 1500);
+        }
+    }
+
+    function updateScoreDisplay() {
+        document.getElementById('scoreDisplay').innerText = score;
+    }
+
+    function exitGame() {
+        isGameActive = false;
+        document.getElementById('mathGame').style.display = 'none';
+        document.getElementById('calculator').style.display = 'block';
+        clearDisplay(); // reset the calculator when returning
     }
 </script>
 
