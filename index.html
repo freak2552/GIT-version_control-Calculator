@@ -3,26 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculator & Math Game</title>
+    <title>Calculator & Math Survival Game</title>
     <style>
-        /* General body styling */
+        /* --- GENERAL --- */
         body {
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #282c34;
+            background-color: #1a1a24;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
+            color: #fff;
         }
 
         /* --- CALCULATOR STYLES --- */
         .calculator {
-            background-color: #ffffff;
+            background-color: #2b2b36;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
             width: 300px;
             transition: opacity 0.3s ease;
         }
@@ -36,9 +37,11 @@
             padding: 10px;
             box-sizing: border-box;
             border: none;
-            background-color: #f0f0f0;
+            background-color: #1e1e26;
             border-radius: 8px;
-            color: #333;
+            color: #00ffcc;
+            font-family: monospace;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
         }
 
         .buttons {
@@ -54,101 +57,143 @@
             cursor: pointer;
             border: none;
             border-radius: 8px;
-            background-color: #e0e0e0;
-            color: #333;
-            transition: background-color 0.2s;
+            background-color: #3e3e4a;
+            color: #fff;
+            transition: background-color 0.2s, transform 0.1s;
         }
 
-        .calc-btn:hover { background-color: #d0d0d0; }
-        .calc-btn:active { background-color: #c0c0c0; }
+        .calc-btn:hover { background-color: #4e4e5a; }
+        .calc-btn:active { transform: scale(0.95); }
 
-        .operator { background-color: #ff9800; color: white; }
-        .operator:hover { background-color: #f57c00; }
+        .operator { background-color: #ff3366; color: white; }
+        .operator:hover { background-color: #ff1a53; }
 
-        .clear { background-color: #f44336; color: white; grid-column: span 2; }
-        .clear:hover { background-color: #d32f2f; }
+        .clear { background-color: #555; grid-column: span 2; }
+        .clear:hover { background-color: #666; }
 
-        .equal { background-color: #4caf50; color: white; grid-column: span 2; }
-        .equal:hover { background-color: #388e3c; }
+        .equal { background-color: #00ffcc; color: #000; grid-column: span 2; }
+        .equal:hover { background-color: #00e6b8; }
         
         .zero-btn { grid-column: span 2; }
 
-        /* --- MATH GAME STYLES --- */
+        /* --- COMPETITIVE GAME STYLES --- */
         .game-container {
-            display: none; /* Hidden by default */
-            background-color: #fff9c4; /* Cheerful yellow */
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            width: 320px;
+            display: none;
+            background-color: #121218;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 0 40px rgba(0, 255, 204, 0.2);
+            width: 340px;
             text-align: center;
-            border: 5px dashed #ffb300;
+            border: 2px solid #00ffcc;
+            position: relative;
         }
 
-        .game-title {
-            color: #ff6f00;
-            margin-top: 0;
-            font-size: 28px;
+        .header-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 14px;
+            color: #aaa;
+            font-family: monospace;
+        }
+
+        .score-display { color: #00ffcc; font-weight: bold; font-size: 18px; }
+        .high-score { color: #ff3366; }
+
+        /* Timer Bar */
+        .timer-container {
+            width: 100%;
+            height: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        #timerBar {
+            height: 100%;
+            width: 100%;
+            background-color: #00ffcc;
+            transition: width 0.1s linear, background-color 0.3s;
         }
 
         .question {
-            font-size: 40px;
+            font-size: 42px;
             font-weight: bold;
-            color: #1565c0;
+            color: #fff;
             margin: 20px 0;
-            background: white;
-            padding: 10px;
-            border-radius: 10px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            font-family: monospace;
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 20px;
         }
 
         .option-btn {
-            background-color: #29b6f6;
-            color: white;
-            border: none;
+            background-color: #2b2b36;
+            color: #fff;
+            border: 2px solid #3e3e4a;
             padding: 15px;
-            font-size: 24px;
+            font-size: 22px;
             font-weight: bold;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: transform 0.1s, background-color 0.2s;
-            box-shadow: 0 4px 0 #0288d1;
-        }
-
-        .option-btn:hover { background-color: #03a9f4; transform: translateY(2px); box-shadow: 0 2px 0 #0288d1;}
-        .option-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #0288d1;}
-
-        .feedback {
-            font-size: 24px;
-            height: 30px;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .score {
-            font-size: 18px;
-            color: #333;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .exit-btn {
-            background-color: #ef5350;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
             border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
+            transition: all 0.1s ease;
+            font-family: monospace;
         }
-        .exit-btn:hover { background-color: #e53935; }
+
+        .option-btn:hover { background-color: #3e3e4a; border-color: #00ffcc; }
+        .option-btn:active { transform: scale(0.95); }
+
+        .correct-anim { background-color: #00ffcc !important; color: #000 !important; }
+        .wrong-anim { background-color: #ff3366 !important; color: #fff !important; }
+
+        .game-over-screen {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(18, 18, 24, 0.95);
+            border-radius: 16px;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .game-over-title { color: #ff3366; font-size: 32px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px;}
+        .final-score { font-size: 48px; color: #00ffcc; margin-bottom: 20px; font-family: monospace;}
+
+        .action-btn {
+            background-color: transparent;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 10px 20px;
+            margin: 5px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .play-again-btn { border-color: #00ffcc; color: #00ffcc; }
+        .play-again-btn:hover { background-color: #00ffcc; color: #000; }
+        
+        .exit-btn { border-color: #555; color: #aaa; }
+        .exit-btn:hover { background-color: #555; color: #fff; }
+
+        /* Screen Flash for damage */
+        @keyframes flashRed {
+            0% { box-shadow: inset 0 0 50px rgba(255, 51, 102, 0.8); }
+            100% { box-shadow: inset 0 0 0 rgba(255, 51, 102, 0); }
+        }
+        .damage { animation: flashRed 0.3s ease-out; }
 
     </style>
 </head>
@@ -182,21 +227,33 @@
     </div>
 </div>
 
-<!-- Child-Friendly Math Game -->
+<!-- Competitive Math Survival Game -->
 <div class="game-container" id="mathGame">
-    <h2 class="game-title">✨ Math Time! ✨</h2>
-    <div class="score">Score: <span id="scoreDisplay">0</span> 🌟</div>
-    <div class="question" id="questionDisplay">5 + 3 = ?</div>
+    <div class="header-stats">
+        <div class="high-score">BEST: <span id="highScoreDisplay">0</span></div>
+        <div class="score-display">SCORE: <span id="scoreDisplay">0</span></div>
+    </div>
     
-    <div class="options-grid">
-        <button class="option-btn" onclick="checkAnswer(0)" id="opt0">1</button>
-        <button class="option-btn" onclick="checkAnswer(1)" id="opt1">2</button>
-        <button class="option-btn" onclick="checkAnswer(2)" id="opt2">3</button>
-        <button class="option-btn" onclick="checkAnswer(3)" id="opt3">4</button>
+    <div class="timer-container">
+        <div id="timerBar"></div>
     </div>
 
-    <div class="feedback" id="feedbackDisplay"></div>
-    <button class="exit-btn" onclick="exitGame()">Back to Calculator</button>
+    <div class="question" id="questionDisplay">READY?</div>
+    
+    <div class="options-grid">
+        <button class="option-btn" onclick="checkAnswer(0)" id="opt0">-</button>
+        <button class="option-btn" onclick="checkAnswer(1)" id="opt1">-</button>
+        <button class="option-btn" onclick="checkAnswer(2)" id="opt2">-</button>
+        <button class="option-btn" onclick="checkAnswer(3)" id="opt3">-</button>
+    </div>
+
+    <!-- Game Over Overlay -->
+    <div class="game-over-screen" id="gameOverScreen">
+        <div class="game-over-title">Time's Up</div>
+        <div class="final-score" id="finalScoreDisplay">0</div>
+        <button class="action-btn play-again-btn" onclick="startMathGame()">Play Again</button>
+        <button class="action-btn exit-btn" onclick="exitGame()">Calculator</button>
+    </div>
 </div>
 
 <script>
@@ -235,13 +292,14 @@
         
         try {
             let result = new Function('return ' + currentInput)();
-            currentInput = Math.round(result * 100000000) / 100000000;
+            currentInput = Math.round(result * 1000000) / 1000000;
             currentInput = currentInput.toString();
             updateDisplay();
             
             // LAUNCH THE GAME: Wait 1 second so they see the result, then start
             setTimeout(() => {
                 if(currentInput !== 'Error' && currentInput !== '') {
+                    showGameUI();
                     startMathGame();
                 }
             }, 1000);
@@ -257,102 +315,175 @@
     }
 
 
-    // --- MATH GAME LOGIC ---
+    // --- COMPETITIVE MATH GAME LOGIC ---
+    const MAX_TIME = 30; // Seconds to start
     let currentCorrectAnswer = 0;
     let score = 0;
+    let highScore = 0;
+    let timeLeft = MAX_TIME;
+    let timerInterval;
 
-    function startMathGame() {
+    function showGameUI() {
         isGameActive = true;
         document.getElementById('calculator').style.display = 'none';
         document.getElementById('mathGame').style.display = 'block';
+    }
+
+    function startMathGame() {
+        document.getElementById('gameOverScreen').style.display = 'none';
         score = 0;
+        timeLeft = MAX_TIME;
         updateScoreDisplay();
         generateQuestion();
+        
+        clearInterval(timerInterval);
+        timerInterval = setInterval(gameTick, 100); // run 10 times a second for smooth bar
+    }
+
+    function gameTick() {
+        timeLeft -= 0.1;
+        
+        // Update timer bar visuals
+        let percentage = (timeLeft / MAX_TIME) * 100;
+        let timerBar = document.getElementById('timerBar');
+        timerBar.style.width = Math.max(percentage, 0) + '%';
+        
+        // Color changes based on time left
+        if (percentage > 50) timerBar.style.backgroundColor = '#00ffcc';
+        else if (percentage > 20) timerBar.style.backgroundColor = '#ffcc00';
+        else timerBar.style.backgroundColor = '#ff3366';
+
+        if (timeLeft <= 0) {
+            endGame();
+        }
     }
 
     function generateQuestion() {
-        // Clear previous feedback
-        document.getElementById('feedbackDisplay').innerText = '';
+        // Difficulty scaling based on current score
+        let level = Math.floor(score / 5); // Level up every 5 correct answers
         
-        // Generate simple numbers (1 to 10) for kid-friendly math
-        let num1 = Math.floor(Math.random() * 10) + 1;
-        let num2 = Math.floor(Math.random() * 10) + 1;
-        let isAddition = Math.random() > 0.5; // 50% chance of + or -
-
-        let operatorSymbol = '+';
+        let num1, num2, operatorSymbol;
         
-        // Ensure no negative results for kids if subtracting
-        if (!isAddition) {
-            operatorSymbol = '-';
-            if (num1 < num2) {
-                let temp = num1;
-                num1 = num2;
-                num2 = temp;
+        if (level === 0) {
+            // Level 0: Basic addition/subtraction
+            num1 = Math.floor(Math.random() * 20) + 5;
+            num2 = Math.floor(Math.random() * 20) + 1;
+            operatorSymbol = Math.random() > 0.5 ? '+' : '-';
+        } else if (level === 1) {
+            // Level 1: Medium addition/subtraction + simple multiplication
+            let ops = ['+', '-', '*'];
+            operatorSymbol = ops[Math.floor(Math.random() * 3)];
+            num1 = Math.floor(Math.random() * 50) + 10;
+            num2 = operatorSymbol === '*' ? Math.floor(Math.random() * 10) + 2 : Math.floor(Math.random() * 50) + 10;
+        } else if (level === 2) {
+            // Level 2: Harder multiplication and division
+            let ops = ['*', '/'];
+            operatorSymbol = ops[Math.floor(Math.random() * 2)];
+            if (operatorSymbol === '*') {
+                num1 = Math.floor(Math.random() * 15) + 5;
+                num2 = Math.floor(Math.random() * 15) + 5;
+            } else {
+                num2 = Math.floor(Math.random() * 12) + 2;
+                num1 = num2 * (Math.floor(Math.random() * 12) + 2); // Ensure clean division
             }
-            currentCorrectAnswer = num1 - num2;
         } else {
-            currentCorrectAnswer = num1 + num2;
+            // Level 3+: Intense mode (Triple digits, big multiplication)
+            let ops = ['+', '-', '*', '/'];
+            operatorSymbol = ops[Math.floor(Math.random() * 4)];
+            num1 = Math.floor(Math.random() * 100) + 20;
+            num2 = operatorSymbol === '*' ? Math.floor(Math.random() * 20) + 5 : 
+                   (operatorSymbol === '/' ? (Math.floor(Math.random() * 15) + 2) : Math.floor(Math.random() * 100) + 10);
+            
+            if (operatorSymbol === '/') num1 = num2 * (Math.floor(Math.random() * 15) + 2);
         }
 
-        document.getElementById('questionDisplay').innerText = `${num1} ${operatorSymbol} ${num2} = ?`;
+        // Calculate correct answer
+        if (operatorSymbol === '+') currentCorrectAnswer = num1 + num2;
+        if (operatorSymbol === '-') currentCorrectAnswer = num1 - num2;
+        if (operatorSymbol === '*') currentCorrectAnswer = num1 * num2;
+        if (operatorSymbol === '/') currentCorrectAnswer = num1 / num2;
 
-        // Generate 3 random wrong answers close to the real answer
+        document.getElementById('questionDisplay').innerText = `${num1} ${operatorSymbol} ${num2}`;
+
+        // Generate tricky wrong answers
         let options = [currentCorrectAnswer];
         while (options.length < 4) {
-            let wrongAnswer = currentCorrectAnswer + (Math.floor(Math.random() * 7) - 3); // +/- 3 range
-            if (wrongAnswer >= 0 && !options.includes(wrongAnswer)) {
+            // Create variations: off by 1, off by 10, or random nearby
+            let variance = Math.floor(Math.random() * 3);
+            let wrongAnswer;
+            
+            if (variance === 0) wrongAnswer = currentCorrectAnswer + (Math.random() > 0.5 ? 1 : -1);
+            else if (variance === 1) wrongAnswer = currentCorrectAnswer + (Math.random() > 0.5 ? 10 : -10);
+            else wrongAnswer = currentCorrectAnswer + (Math.floor(Math.random() * 20) - 10);
+            
+            if (wrongAnswer !== currentCorrectAnswer && !options.includes(wrongAnswer)) {
                 options.push(wrongAnswer);
             }
         }
 
-        // Shuffle the options
+        // Shuffle
         options.sort(() => Math.random() - 0.5);
 
-        // Assign to buttons
+        // Map to UI
         for (let i = 0; i < 4; i++) {
             let btn = document.getElementById(`opt${i}`);
             btn.innerText = options[i];
-            btn.dataset.value = options[i]; // Store value in data attribute
-            btn.disabled = false; // re-enable if disabled
+            btn.dataset.value = options[i];
+            btn.disabled = false;
         }
     }
 
     function checkAnswer(buttonIndex) {
-        let selectedValue = parseInt(document.getElementById(`opt${buttonIndex}`).dataset.value);
-        let feedbackEl = document.getElementById('feedbackDisplay');
-
-        // Disable buttons temporarily to prevent spam clicking
-        for(let i=0; i<4; i++) document.getElementById(`opt${i}`).disabled = true;
+        let btn = document.getElementById(`opt${buttonIndex}`);
+        let selectedValue = parseInt(btn.dataset.value);
 
         if (selectedValue === currentCorrectAnswer) {
-            feedbackEl.innerText = '🎉 Correct! Great job!';
-            feedbackEl.style.color = '#4caf50';
+            // Correct: +1 Score, +1.5 Seconds
             score += 1;
+            timeLeft = Math.min(timeLeft + 1.5, MAX_TIME); // Cap at max time
             updateScoreDisplay();
             
-            // Wait a moment, then load next question
-            setTimeout(generateQuestion, 1500);
-        } else {
-            feedbackEl.innerText = 'Oops! Try again. ❌';
-            feedbackEl.style.color = '#f44336';
-            
-            // Re-enable buttons so they can try again
+            // Visual feedback
+            btn.classList.add('correct-anim');
             setTimeout(() => {
-                feedbackEl.innerText = '';
-                for(let i=0; i<4; i++) document.getElementById(`opt${i}`).disabled = false;
-            }, 1500);
+                btn.classList.remove('correct-anim');
+                generateQuestion();
+            }, 150);
+            
+        } else {
+            // Wrong: -3 Seconds, Flash Screen
+            timeLeft -= 3;
+            document.getElementById('mathGame').classList.add('damage');
+            btn.classList.add('wrong-anim');
+            
+            setTimeout(() => {
+                document.getElementById('mathGame').classList.remove('damage');
+                btn.classList.remove('wrong-anim');
+            }, 300);
         }
     }
 
     function updateScoreDisplay() {
         document.getElementById('scoreDisplay').innerText = score;
+        if (score > highScore) {
+            highScore = score;
+            document.getElementById('highScoreDisplay').innerText = highScore;
+        }
+    }
+
+    function endGame() {
+        clearInterval(timerInterval);
+        document.getElementById('finalScoreDisplay').innerText = score;
+        document.getElementById('gameOverScreen').style.display = 'flex';
     }
 
     function exitGame() {
+        clearInterval(timerInterval);
         isGameActive = false;
         document.getElementById('mathGame').style.display = 'none';
+        document.getElementById('gameOverScreen').style.display = 'none';
         document.getElementById('calculator').style.display = 'block';
-        clearDisplay(); // reset the calculator when returning
+        clearDisplay();
     }
 </script>
 
