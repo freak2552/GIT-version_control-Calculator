@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator</title>
+    <style>
+        /* General body styling to center the calculator */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #282c34;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* Calculator container styling */
+        .calculator {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+
+        /* The display screen styling */
+        #display {
+            width: 100%;
+            height: 60px;
+            font-size: 32px;
+            text-align: right;
+            margin-bottom: 20px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            color: #333;
+        }
+
+        /* Grid layout for buttons */
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        /* Default button styling */
+        button {
+            padding: 20px 0;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: #e0e0e0;
+            color: #333;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #d0d0d0;
+        }
+
+        button:active {
+            background-color: #c0c0c0;
+        }
+
+        /* Specific colors for operators and special buttons */
+        .operator {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .operator:hover {
+            background-color: #f57c00;
+        }
+
+        .clear {
+            background-color: #f44336;
+            color: white;
+            grid-column: span 2;
+        }
+        
+        .clear:hover {
+            background-color: #d32f2f;
+        }
+
+        .equal {
+            background-color: #4caf50;
+            color: white;
+            grid-column: span 2;
+        }
+
+        .equal:hover {
+            background-color: #388e3c;
+        }
+        
+        .zero-btn {
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator">
+    <input type="text" id="display" disabled>
+    <div class="buttons">
+        <button class="clear" onclick="clearDisplay()">C</button>
+        <button class="operator" onclick="appendOperator('/')">&divide;</button>
+        <button class="operator" onclick="appendOperator('*')">&times;</button>
+        
+        <button onclick="appendNumber('7')">7</button>
+        <button onclick="appendNumber('8')">8</button>
+        <button onclick="appendNumber('9')">9</button>
+        <button class="operator" onclick="appendOperator('-')">-</button>
+        
+        <button onclick="appendNumber('4')">4</button>
+        <button onclick="appendNumber('5')">5</button>
+        <button onclick="appendNumber('6')">6</button>
+        <button class="operator" onclick="appendOperator('+')">+</button>
+        
+        <button onclick="appendNumber('1')">1</button>
+        <button onclick="appendNumber('2')">2</button>
+        <button onclick="appendNumber('3')">3</button>
+        <button class="equal" onclick="calculate()">=</button>
+        
+        <button class="zero-btn" onclick="appendNumber('0')">0</button>
+        <button onclick="appendNumber('.')">.</button>
+    </div>
+</div>
+
+<script>
+    let display = document.getElementById('display');
+    let currentInput = '';
+
+    // Appends a number or decimal to the display string
+    function appendNumber(number) {
+        // Prevent multiple decimals in a single number sequence
+        if (number === '.' && currentInput.includes('.')) {
+            let parts = currentInput.split(/[+\-*/]/);
+            if (parts[parts.length - 1].includes('.')) return;
+        }
+        
+        currentInput += number;
+        updateDisplay();
+    }
+
+    // Appends an operator to the display string
+    function appendOperator(operator) {
+        if (currentInput === '') return;
+        
+        // Prevent multiple operators in a row, replace the last one if pressed consecutively
+        let lastChar = currentInput.slice(-1);
+        if (['+', '-', '*', '/'].includes(lastChar)) {
+            currentInput = currentInput.slice(0, -1) + operator;
+        } else {
+            currentInput += operator;
+        }
+        
+        updateDisplay();
+    }
+
+    // Clears the calculator state
+    function clearDisplay() {
+        currentInput = '';
+        updateDisplay();
+    }
+
+    // Evaluates the math expression
+    function calculate() {
+        if (currentInput === '') return;
+        
+        try {
+            // Using new Function instead of eval for a slightly safer evaluation
+            let result = new Function('return ' + currentInput)();
+            
+            // Format to prevent extremely long decimals
+            currentInput = Math.round(result * 100000000) / 100000000;
+            currentInput = currentInput.toString();
+            updateDisplay();
+        } catch (error) {
+            display.value = 'Error';
+            currentInput = '';
+        }
+    }
+
+    // Updates the DOM display element
+    function updateDisplay() {
+        display.value = currentInput;
+    }
+</script>
+
+</body>
+</html>
